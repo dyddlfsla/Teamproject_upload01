@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+risklist.addContentInfo 
+
+// Premium.A03_repository.A04_RiskDao
+// public void addContentInfo(Risk writeContentBean);
+
+ -->						
+<mapper namespace="Premium.A03_repository.A04_RiskDao">
+	<resultMap type="pro" id="proResult"/>
+	<resultMap type="prom" id="promResult"/>
+	<resultMap type="prog" id="progResult"/>
+	<resultMap type="work" id="workResult"/>
+	<resultMap type="risk" id="riskResult"/>
+	
+		
+	<select id="riskList" resultMap="riskResult" parameterType="risk">
+		SELECT a.RISKNO, b.WORKTITLE, D.ENAME , E.ENAME dname , A.RITITLE , A.INDATE, f.PROGCONTENT ,C.* , a.*
+		FROM risk a, WORK b, PROJECT c, EMP1 D, EMP1 E, PROGRESS f
+		where a.workno=b.WORKNO 
+		AND B.EMPNO=D.EMPNO
+		AND B.MGR=E.EMPNO
+		AND b.PRONO=c.PRONO
+		AND a.PROGRESS = f.PROGRESS 
+		AND (D.empno = #{empno} OR E.EMPNO = #{empno})
+	</select>
+		
+	 <insert id="insertRisk" parameterType="risk">
+	 	INSERT INTO RISK values(RISK_seq.nextval,#{workno},
+		sysdate,null,#{rititle},#{rcontent},1,0,null)
+
+ 	</insert>
+ 	
+ 	<select id="getRisk" parameterType="int" 
+ 		resultType="risk">
+	SELECT a.* , b.Worktitle 
+	FROM risk a, WORK b
+	WHERE 1=1
+	and a.workno = b.workno
+	and riskno=#{riskno}	
+ 	</select>
+ 	
+ 	 <update id="updateRisk" parameterType="risk">
+		UPDATE risk 
+		set	rcontent=#{rcontent},
+			progress=#{progress},
+			eddate=sysdate,
+			progper=#{progper}
+		WHERE riskno=#{riskno} 	
+ 	</update>
+ 	
+ 	<delete id="deleteRisk" parameterType="int">
+ 		delete  
+ 		from risk
+ 		where riskno = #{riskno}
+ 	</delete> 	
+ 	
+ 	 <select id="getWork" resultMap="workResult" parameterType="work">
+ 	SELECT *
+	FROM work
+	WHERE 1=1
+	AND (empno=#{empno} or mgr=#{empno})
+ 	</select>
+ 	<select id="getProg" resultMap="progResult" parameterType="prog">
+	SELECT * FROM PROGRESS
+	WHERE PROGRESS !=6
+ 	</select>
+ 	
+ 	<select id="getWork2" parameterType="int" 
+ 	resultType="work">
+	SELECT * 
+	FROM work
+	WHERE 1=1
+	and workno=#{workno}	
+ 	</select>
+ 	
+ 	<update id="updateRisk2" parameterType="work">
+ 	UPDATE WORK
+	set	progress=6,
+		progper=0
+	WHERE workno=#{workno}
+ 	</update>
+ 	
+ 	 <update id="updateRisk3" parameterType="work">
+ 	UPDATE WORK
+	set	progress=4,
+			progper=100
+	WHERE workno=#{workno}
+ 	</update>
+</mapper> 

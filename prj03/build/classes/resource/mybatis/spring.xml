@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<typeAlias alias="action" type="Premium.vo.Action"/>
+		<typeAlias alias="dept" type="Premium.vo.Dept1"/>
+		<typeAlias alias="emp" type="Premium.vo.Emp1"/>
+		<typeAlias alias="mane" type="Premium.vo.Maneuver"/>
+		<typeAlias alias="power" type="Premium.vo.Power"/>
+		<typeAlias alias="prog" type="Premium.vo.Progress"/>
+		<typeAlias alias="pro" type="Premium.vo.Project"/>
+		<typeAlias alias="rank" type="Premium.vo.Rank"/>
+		<typeAlias alias="risk" type="Premium.vo.Risk"/>
+		<typeAlias alias="rsfile" type="Premium.vo.Riskfile"/>
+		<typeAlias alias="work" type="Premium.vo.Work"/>
+		<typeAlias alias="prom" type="Premium.vo.Promember"/>
+		<typeAlias alias="str" type="java.lang.String"/>
+		<typeAlias alias="mac" type="Premium.vo.MaAreachart"/>
+		<typeAlias alias="mbc" type="Premium.vo.MaBarchart"/>
+		<typeAlias alias="wofi" type="Premium.vo.Workfile"/>
+		<typeAlias alias="gantt" type="Premium.vo.Gantt"/>
+		<typeAlias alias="pgr" type="Premium.vo.Pro_gress"/>
+		<typeAlias alias="cal" type="Premium.vo.Calender"/>
+		<typeAlias alias="pbcc" type="Premium.vo.pmBarchart"/>
+		<typeAlias alias="andwokr" type="Premium.vo.And_work"/>
+		<typeAlias alias="ceowork" type="Premium.vo.And_workCeo"/>
+		<typeAlias alias="dolist" type="Premium.vo.dolist"/>
+		<typeAlias alias="dolistsch" type="Premium.vo.dolistSch"/>
+
+	</typeAliases>
+	<mappers>
+		<mapper resource="resource/mybatis/PremiumMapper.xml"/>
+		<mapper resource="resource/mybatis/WorkMapper.xml"/>
+		<mapper resource="resource/mybatis/LoginMapper.xml"/>
+		<mapper resource="resource/mybatis/risk_mapper.xml"/>
+		<mapper resource="resource/mybatis/AndroidMapper.xml"/>
+		<mapper resource="resource/mybatis/dolist_mapper.xml"/>
+	</mappers>
+</configuration>

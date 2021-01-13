@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >	
+<mapper namespace="Premium.A03_repository.A01_PremiumDao">
+	<resultMap type="prog" id="progResult"/>
+	<resultMap type="power" id="powerResult"/>
+	<resultMap type="rank" id="rankResult"/>
+	<resultMap type="dept" id="deptResult"/>
+
+	<!-- public ArrayList<Emp1> EmpList(Emp1 em);  사원관리 전체 페이지-->
+	<resultMap type="emp" id="empResult"/>
+	<select id="empList" resultMap="empResult" parameterType="emp">
+		SELECT a.*, b.deptname , c.rankname , d.POWERNAME 
+		FROM emp1 a, dept1 b, RANK c , power d  
+		WHERE 
+		a.DEPTNO = b.deptno AND 
+		a.RANKNO = c.RANKNO AND 
+		a.POWERNO =d.POWERNO
+	</select>
+	<select id="empList2" resultMap="empResult" parameterType="emp">
+		SELECT * FROM emp1
+		WHERE POWERNO =2
+	</select>
+		<select id="empList3" resultMap="empResult" parameterType="emp">
+		SELECT a.*, b.deptname , c.rankname , d.POWERNAME 
+		FROM emp1 a, dept1 b, RANK c , power d  
+		WHERE 1=1 
+		AND a.DEPTNO = b.deptno 
+		AND a.RANKNO = c.RANKNO
+		AND a.POWERNO =d.POWERNO 
+		AND a.POWERNO =1
+	</select>
+	
+	<!-- public ArrayList<Project> proList(Project pro) 프로젝트 상세 페이지-->
+	<resultMap type="pro" id="proResult"/>
+	<select id="proList" resultMap="proResult" parameterType="pro">
+	SELECT a.* , b.ename
+	FROM PROJECT a, emp1 b
+	WHERE a.pm = b.empno
+	</select>
+	
+	<resultMap type="prom" id="promResult"/>
+	<select id="promList" resultMap="promResult" parameterType="prom">
+	SELECT a.prono , a.PROTITLE , b.empno , c.ename , d.rankname , e.powername
+	FROM PROJECT a , PROMEMBER b , emp1 c , RANK d , power e
+	WHERE 1=1
+	AND a.PRONO = b.PRONO 
+	AND b.EMPNO = c.EMPNO 
+	AND c.RANKNO = d.RANKNO
+	AND c.POWERNO = e.POWERNO 
+		AND a.prono = #{prono}
+	</select>
+	
+	<insert id="insertMem" parameterType="emp">
+	INSERT INTO emp1 values
+	(empno_seq.nextval,#{deptno},#{rankno},#{powerno},#{ename},#{mail},
+	to_date(#{ind},'YYYY-MM-DD'),#{tel},ceil(dbms_random.value(1000,9999)))
+	</insert>
+	<delete id="deleteProm" parameterType="int">
+ 		delete FROM PROMEMBER
+		WHERE prono=#{prono}
+		AND empno=#{empno}
+ 	</delete>
+	
+	<select id="curEmpno" resultType="int">
+		SELECT empno_seq.currval FROM DUAL
+	</select>
+	
+	
+	<!--public void insertPro(Project insert);  프로젝트 등록-->
+	<insert id="insertPro" parameterType="pro">
+	INSERT INTO PROJECT values(project_seq.nextval,#{protitle},
+	#{pm},to_date(#{sd},'YYYY-MM-DD'),to_date(#{ed},'YYYY-MM-DD'),
+	#{comment1},1,#{field})
+	</insert>
+	<!-- 프로젝트 상세 화면  -->
+	 	<select id="getPro" parameterType="int" 
+ 		resultType="pro">
+		 SELECT * 
+		FROM PROJECT
+		WHERE prono=#{prono}	
+ 	</select>
+ 	<!-- 프로젝트 수정 -->
+ 	 	<update id="updatePro" parameterType="pro">
+		UPDATE PROJECT 
+		set	pm=#{pm},
+			startdate=to_date(#{sd},'YYYY-MM-DD'),
+			enddate=to_date(#{ed},'YYYY-MM-DD'),
+			comment1=#{comment1},
+			progress=#{progress},
+			field=#{field}
+		WHERE prono=#{prono} 	
+ 	</update>
+ 	<!-- 프로젝트 삭제 -->
+ 		<delete id="deletePro" parameterType="int">
+ 		delete  
+ 		from PROJECT
+ 		where prono = #{prono}
+ 	</delete>
+	<!-- 메일보내기 public void mailEmp(Emp1 ms) -->
+	<select id="mailEmp" parameterType="emp">
+		SELECT empno,pass FROM emp1
+		WHERE ENAME = #{ename}		
+	</select>
+	
+ 	<insert id="insertProm" parameterType="prom">
+	INSERT INTO PROMEMBER values(#{prono},#{empno})
+	</insert> 	
+	
+	<!-- 데이터 테이블 프로젝트 데이터 -->
+
+	<!--  데이터 테이블 팀원 데이터 -->
+	
+	<!-- public Emp1 getEmp1(int empno); 더블클릭으로 가져오기 -->
+	<select id="getEmp1" parameterType="int" 
+ 		resultType="emp">
+		 SELECT * 
+		FROM Emp1
+		WHERE empno=#{empno}	
+ 	</select>
+
+ 	
+ 	<!-- public void updateEmp1(Emp1 upt);	사원 수정 -->
+ 	 	<update id="updateEmp1" parameterType="emp">
+		UPDATE Emp1 
+		set	DEPTNO = #{deptno},
+			RANKNO = #{rankno},
+			POWERNO = #{powerno},
+			MAIL = #{mail},
+			TEL = #{tel}
+		WHERE empno=#{empno} 
+ 	</update>
+ 	<!-- public void deleteEmp1(int empno);	 사원 삭제 -->
+ 		<delete id="deleteEmp1" parameterType="int">
+ 		delete  
+ 		from Emp1
+ 		where empno = #{empno}
+ 	</delete> 	
+		<!-- public ArrayList<MaAreachart> mac(MaAreachart mc); -->
+	<resultMap type="mac" id="macResult"/>
+	<select id="mac" resultMap="macResult" parameterType="mac">
+		SELECT years labels, prototle data FROM maareachart
+	</select>
+	
+	
+	
+	<!-- 메인 Area 차트 -->
+	
+	 <resultMap type="str" id="strResult"/>
+	<!-- Area 차트 년도별 -->
+	<select id="getLabels" resultMap="strResult" >
+	SELECT TO_CHAR(startdate,'yyyy')  FROM PROJECT GROUP BY TO_CHAR(startdate,'yyyy') 
+	</select>	 
+	 <resultMap type="int" id="intResult"/>
+	 <!-- Area 프로젝트수 -->
+	<select id="getDatas" resultMap="intResult" >
+	SELECT count(prono) 프젝수 FROM PROJECT
+	</select>
+	<!--  메인 Bar 차트  -->
+	<!-- 프로젝트별 -->
+	<select id="getLabels2" resultMap="strResult" >
+		SELECT protitle FROM PROJECT
+	</select>	 
+	<!-- 진행상황 -->
+	<select id="getDatas2" resultMap="intResult" >
+		SELECT maprogress FROM MABARCHART
+	</select>
+	
+	<!--  프로젝트 Bar 차트  -->
+	<!-- pm -->
+	<select id="getLabels5" resultMap="strResult" >
+		SELECT a.ENAME FROM EMP1 a, (SELECT PM, COUNT(*) FROM PROJECT GROUP BY PM) b WHERE a.EMPNO = pm 
+	</select>	 
+	<!-- 프로젝트 갯수 -->
+	<select id="getDatas5" resultMap="intResult" >
+		SELECT COUNT(*) FROM PROJECT GROUP BY PM 
+	</select>
+	
+	
+	
+	
+	<!-- P.M Area 차트 -->
+	<select id="getLabels3" resultMap="strResult" >
+		SELECT TO_CHAR(startdate,'MM') 월 FROM PROJECT GROUP BY TO_CHAR(startdate,'MM')
+	</select>
+	<select id="getDatas3" resultMap="intResult" >
+		SELECT pmprogress FROM PMAREACHART
+	</select>
+	
+	
+	
+
+
+	
+	
+	
+	
+	 <select id="getProg2" resultMap="progResult" parameterType="prog">
+	SELECT * FROM PROGRESS
+	WHERE PROGRESS !=3
+	AND PROGRESS !=5
+ 	</select>
+ 		
+ 		 <select id="powerlist" resultMap="powerResult" parameterType="power">
+	SELECT * FROM power
+ 	</select>
+ 		 <select id="ranklist" resultMap="rankResult" parameterType="rank">
+	SELECT * FROM rank
+ 	</select>
+ 		 <select id="deptlist" resultMap="deptResult" parameterType="dept">
+	SELECT * FROM dept1
+ 	</select>
+	
+	<!-- public ArrayList<Pro_gress> pro_gre_List(Pro_gress pgr); 업무현황 -->
+	<resultMap type="pgr" id="PgrResult"/>
+	<select id="pro_gre_List" resultMap="PgrResult" parameterType="pgr">
+	SELECT
+	(SELECT COUNT(prono) FROM PROJECT WHERE STARTDATE > sysdate) progress,
+	(SELECT count(PRONO) FROM PROJECT WHERE  SYSDATE > STARTDATE) ings,
+	(SELECT COUNT(prono) FROM PROJECT WHERE ENDDATE > sysdate) comp,
+	(SELECT COUNT(*) FROM PROJECT WHERE TO_DATE(ENDDATE ,'YYYY-MM-DD') - TO_DATE(SYSDATE,'YYYY-MM-DD') BETWEEN 0 AND 7) dead
+	from dual
+	</select>
+	
+	
+	
+			<!-- pie 차트 -->
+		<select id="getLabels4" resultMap="strResult" >
+			WITH duals AS
+		(
+		SELECT PROGRESS  FROM PMPIECHART UNION ALL
+		SELECT ings FROM PMPIECHART  UNION ALL
+		SELECT comp FROM PMPIECHART  UNION ALL
+		SELECT dead FROM PMPIECHART     
+		)
+		SELECT * FROM duals
+		</select>
+	
+		<select id="getDatas4" resultMap="intResult">
+		WITH dual AS
+		(
+		SELECT COUNT(prono) FROM PROJECT WHERE STARTDATE > sysdate  UNION ALL
+		SELECT count(PRONO) FROM PROJECT WHERE  SYSDATE > STARTDATE UNION ALL
+		SELECT COUNT(prono) FROM PROJECT WHERE ENDDATE > sysdate UNION ALL
+		SELECT COUNT(prono) FROM PROJECT WHERE TO_DATE(ENDDATE ,'YYYY-MM-DD') - TO_DATE(SYSDATE,'YYYY-MM-DD') BETWEEN 0 AND 7 
+		)
+		SELECT * FROM dual
+		</select>	
+	
+	
+ 
+</mapper>

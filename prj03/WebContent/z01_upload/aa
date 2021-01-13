@@ -1,0 +1,4 @@
+#다운로드시 필요한 서버의 특정한 위치..
+upload=C:/z02_java/workspace/prj03/WebContent/z01_upload
+#업로드의 서버의 임시위치
+tmpupload=C:/z02_java/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/prj03/z01_upload

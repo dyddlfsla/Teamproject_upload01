@@ -1,0 +1,1 @@
+SELECT protitle, worktitle FROM PROJECT p AND WORK b ;

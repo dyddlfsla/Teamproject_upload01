@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xmlns:util="http://www.springframework.org/schema/util"
+	 xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd
+  		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd     
+        http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-4.0.xsd
+   		http://www.springframework.org/schema/websocket
+		http://www.springframework.org/schema/websocket/spring-websocket.xsd" >
+	<!-- 자동 컴포넌트 등록 controller/service/repository 등록 
+	base-package= "Springwebs"를 기준으로 컨테이너애서 객체로 메모리에 생성
+	@Controller @Service @Repsoitory 로 선언된 클래스들만 객체를 생성
+	
+	
+	-->
+	<context:component-scan base-package="Premium">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+	<!--소스상에 annotation으로 autowire 설정할 수 있게 선언 
+	
+	@ : annotation으로 여러자기 기능을 효과적으로 처리할 때 활용된다.
+	주로 @Autowired를 통해 자동 객체 할당이 처리 되게 해준다.
+	class A01_EmpController{}
+	@Autowired
+	private A01_EmpService service;
+	
+	A01_EmpService가 containe를 통해 객체가 생성되어 있으면 자동으로 A01_EMpService가 A01_EmpController안에 할당이 되게 처리한다.
+	
+	A01_EmpService service = new A01_EmpService();
+	
+	
+	-->
+	<context:annotation-config/>
+	<!-- 공통 정보 파일 설정과 로딩 
+	key=value 형식으로 된 설정 정보를 사용하여 xml이나 java소스에서 활용할수 있게 처리할 떄 활용된다.
+	-->
+	<context:property-placeholder location="classpath:/resource/property/info"/>
+	<!-- DB 연결 정보 -->
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="driverClassName" value="${driver}"/>
+			<property name="url" value="${url}"/>
+			<property name="username" value="${user}"/>
+			<property name="password" value="${pass}"/>
+		</bean>
+		
+	<!-- Mybatis 모듈 사용 -->
+	<!-- 1.연결과 공통 mybatis 설정 파일 선언 
+			연결 객체를 myvatis 프레임웍에 매핑하여 처리하는 내용
+	-->
+		<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+			<property name="dataSource" ref="dataSource"/>
+			<property name="configLocation" value="classpath:/resource/mybatis/spring.xml"/>
+		</bean>
+	<!-- 2.사용하게 될 Repository(DAO)단 위치 선언
+			springweb\a03_mvc\a03_repository
+			특정한 dao 패키지를 설정해 놓으면 해당 패키지애 있는 interface로 된 내용을 실제 객체를 mybatis 프레임웍에서 만들어 준다.  
+	-->
+		<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+			<property name="basePackage" value="Premium.A03_repository"></property>
+		</bean>
+		
+		<!-- view를 container id로 등록 -->
+			<bean id="btnViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+	 		<property name="order" value="0"/> <!-- id가 있는게 1순위 -->
+	 	</bean>
+		<!-- view를 jsp로 등록 -->
+		<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	 		<property name="order" value="1"/> <!-- id가 없으므로 2순위 -->
+	 	</bean>
+		<!-- 파일 업로드를 위한 viewResolver 등록 -->
+	 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+	 	<!-- 파일 다운로드 view 등록 -->
+	 	<bean id="download" class="Premium.util.A01_DownloadViewer"/>
+	 	<!-- <bean id="downloadView" class="springweb.z02_util.A01_DownloadViewer"/>  -->
+		<!-- ArrayList<vo>에 있는 데이터를 자동으로 json 형태의 문자열로 변환 처리한다. -->
+	 	<bean id="pageJsonReport" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+	 		<property name="contentType" value="text/html;charset-utf-8"/>
+	 	</bean>
+	 	
+	 	<bean id="mailSender" 
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com"/>
+		<property name="port" value="587"/>
+		<!-- gmail 에 등록된 계정과 비밀번호 작성 -->
+		<property name="username" value="rlarlxo12"/>
+		<property name="password" value="171206rlawlgus^^"/>
+		<!-- 보안 관련 설정 -->
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- 다국어 처리 -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+         <property name="basenames">
+            <list>
+               <value>message.msg</value>
+            </list>
+         </property>
+     </bean>
+     <bean id="localeResolver"   class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/>
+
+<!-- chatting -->
+<bean id="annotationUrlMapping"
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+	<bean id="annotationMethodHandlerMapping"
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+	<bean id="controllerClassNameHandlerMapping"
+		class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
+<mvc:default-servlet-handler/>
+	<websocket:handlers>
+		<websocket:mapping 
+			handler="chattingHandler" 
+			path="/chatting.do"/>
+	</websocket:handlers>
+
+</beans>			

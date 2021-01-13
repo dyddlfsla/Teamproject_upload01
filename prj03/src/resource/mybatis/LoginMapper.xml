@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >   
+<mapper namespace="Premium.A03_repository.A03_login_dao">
+
+<select id="empLogin" resultType="emp" parameterType="emp">
+   SELECT a.*, b.deptname , c.rankname , d.POWERNAME 
+   FROM emp1 a, dept1 b, RANK c , power d  
+   WHERE a.DEPTNO = b.deptno 
+   AND a.RANKNO = c.RANKNO 
+   AND a.POWERNO =d.POWERNO
+   AND empno=#{empno} 
+   AND pass=#{pass}
+</select>
+
+<select id="findInfo"  parameterType="emp">
+   SELECT * FROM emp1
+   WHERE mail=#{mail}
+</select>
+
+<select id="updatepass" parameterType="emp">
+   UPDATE Emp1
+   set pass=#{pass}
+   WHERE empno=#{empno}
+
+</select>
+
+<update id="updatepass2" parameterType="emp">
+   UPDATE Emp1
+   set pass=ceil(dbms_random.value(1000,9999))
+   WHERE empno=#{empno}
+
+</update>
+
+
+</mapper>

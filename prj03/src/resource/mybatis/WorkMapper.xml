@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >	
+<mapper namespace="Premium.A03_repository.A02_WorkDao">
+
+<!-- public ArrayList<Emp1> EmpList(Emp1 em);  사원관리 전체 페이지-->
+	<resultMap type="pro" id="proResult"/>
+	<resultMap type="prom" id="promResult"/>
+	<resultMap type="prog" id="progResult"/>
+	<resultMap type="work" id="workResult"/>
+	<select id="workList" resultMap="workResult" parameterType="work">
+SELECT a.prono, b.PROTITLE, b.pm, e.ename dname, a.WORKNO, a.WORKTITLE, 
+a.empno, c.ename, a.STARTDATE, a.ENDDATE , d.PROGCONTENT , a.PROGPER 
+FROM WORK a, PROJECT b, emp1 c, PROGRESS d, emp1 e
+WHERE 1=1
+and a.prono = b.prono
+AND b.pm = e.EMPNO 
+AND a.empno = c.empno
+AND a.PROGRESS = d.PROGRESS
+AND (a.empno = #{empno} OR b.pm = #{empno})
+	</select>
+	
+	<select id="getList" resultMap="workResult" parameterType="work">
+		SELECT * FROM WORK
+	</select>	
+	
+	<!-- and ename = #{sessEmp.ename} -->
+<!-- 
+public void insertWork(Work ins);
+INSERT INTO WORK values(work_seq.nextval,1,2344,'로그인','로그인 만들어 주세요','20201109','20201211',1,0);
+workno NUMBER,
+prono NUMBER,
+empno NUMBER,
+worktitle varchar2(100),
+workcontent varchar2(300),
+startdate DATE,
+enddate DATE,
+progress NUMBER,
+progper number
+ -->
+ 
+	 <insert id="insertWork" parameterType="work">
+	 	INSERT INTO work values( work_seq.nextval,
+		#{prono},#{empno},#{mgr},#{worktitle},#{workcontent},
+		to_date(#{sd},'YYYY-MM-DD'),to_date(#{ed},'YYYY-MM-DD'),1,0)
+ 	</insert>
+ 	
+ 	
+ 	 <select id="getWork" parameterType="int" 
+ 		resultType="work">
+	SELECT a.* , b.PROTITLE 
+	FROM WORK a, PROJECT b
+	WHERE 1=1
+	and a.prono = b.prono
+	and workno=#{workno}	
+ 	</select>
+ 	
+ 	 	<update id="updateWork" parameterType="work">
+		UPDATE work 
+		set	empno =#{empno},
+			workcontent=#{workcontent},
+			startdate=to_date(#{sd},'YYYY-MM-DD'),
+			enddate=to_date(#{ed},'YYYY-MM-DD'),
+			progress=#{progress},
+			progper=#{progper}
+		WHERE workno=#{workno} 	
+ 	</update>
+ 	
+ 	<delete id="deleteWork" parameterType="int">
+ 		delete  
+ 		from work
+ 		where workno = #{workno}
+ 	</delete> 	
+ 	 
+	 
+ 	 <insert id="insertWorkfile" parameterType="String">
+ 		INSERT INTO WORKFILE values(#{workno},#{filename},sysdate,null)
+ 	</insert>
+ 	<resultMap type="str" id="strRs"/>
+ 	<select id="Workfile" resultMap="strRs"
+ 	parameterType="int">
+ 	SELECT filename
+	FROM workFILE
+	WHERE workno = #{workno}
+ 	</select>
+ 	<select id="getPro" resultMap="proResult" parameterType="pro">
+ 	SELECT *
+	FROM PROJECT
+	WHERE 1=1
+	AND pm=#{empno}
+ 	</select>
+ 	 	<select id="getProm" resultMap="promResult" parameterType="prom">
+	SELECT a.*, b.ename 
+	FROM PROMEMBER a, emp1 b 
+	WHERE 1=1
+	AND a.empno=b.empno
+	AND prono=#{prono}
+ 	</select>
+ 	 	 <select id="getProg" resultMap="progResult" parameterType="prog">
+	SELECT * FROM PROGRESS
+ 	</select>
+ 	
+	<!-- 	public ArrayList<Work> Glist (); 간트 전체업무-->
+	<resultMap type="gantt" id="ganttResult"/>
+	<select id="Glist" resultMap="ganttResult">
+		SELECT b.pm, e.ename dname, a.WORKNO id, a.WORKTITLE text, 
+		TO_CHAR(a.STARTDATE, 'DD-MM-YYYY') start_date ,
+		(a.ENDDATE - a.STARTDATE ) duration,
+		a.PROGPER progress
+		FROM WORK a, PROJECT b, emp1 c, PROGRESS d, emp1 e
+		WHERE 1=1
+		and a.prono = b.prono
+		AND b.pm = e.EMPNO 
+		AND a.empno = c.empno
+		AND a.PROGRESS = d.PROGRESS
+	</select>
+	<!-- selete로 프로젝트를 선택 했을 때 해당 프로젝트의 업무 -->
+	<resultMap type="gantt" id="gantt_List"/>
+	<select id="gantt_List" resultMap="gantt_List" parameterType="int">
+	SELECT workno id ,WORKTITLE text, TO_CHAR(STARTDATE ,'DD-MM-YYYY') start_date,
+	(ENDDATE - STARTDATE ) duration, 1 oepn
+	FROM WORK WHERE prono = #{prono}
+	</select>
+	<resultMap type="cal" id="calResult">
+		<result column="workno" property="id"/>
+		<result column="worktitle" property="title"/>
+		<result column="startdate" property="start"/>
+		<result column="enddate" property="end"/>
+	</resultMap>
+		<select id="getCal" resultMap="calResult" >
+		SELECT * FROM work
+	</select>
+	<resultMap type="pro" id="project_List"/>
+	<select id="project_List" resultMap="project_List" >
+		SELECT * FROM PROJECT
+	</select>
+
+
+</mapper>

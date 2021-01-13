@@ -1,0 +1,52 @@
+<%@ page language="java" contentType="text/html; charset=${encoding}"
+    pageEncoding="${encoding}"
+    import="jspexp.d01_database.*"
+    import="java.util.*"
+    import="jspexp.a01_vo.*"    
+    %>
+<%request.setCharacterEncoding("utf-8");%>   
+<%!
+	int intCh(String s){
+		int num = 0;
+		if(s!=null && !s.equals("")){
+			num = Integer.parseInt(s);
+		}
+		return num;
+	}
+	double dblCh(String s){
+		double num = 0.0;
+		if(s!=null && !s.equals("")){
+			num = Double.parseDouble(s);
+		}
+		return num;
+	}
+%> 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="${encoding}">
+<title>말은 마음의 초상이다.-레이</title>
+<link rel="stylesheet" 
+	href="/jspexp/a00_com/a00_com.css">	
+<style>
+	
+</style>
+<script>
+	window.onload=function(){
+		//document.querySelector("#start").innerText="시작!";
+	};
+</script>
+</head>
+<%-- 
+# 시작
+1.
+
+--%>
+<body>
+	<h2 id="start" align="center"><%="jsp 시작"%></h1>
+	<table>
+		<tr><th>내용</th></tr>
+		<tr><td>데이터</td></tr>
+	</table>	
+</body>
+</html>

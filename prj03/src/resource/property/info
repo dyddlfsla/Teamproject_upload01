@@ -1,0 +1,11 @@
+# 데이터 베이스 정보
+# 여러가지 프로그램 내에 변경 가능한 설정옵션을 이 파일로 한꺼번에 관리 할 수 있다.
+driver=oracle.jdbc.driver.OracleDriver
+url=jdbc:oracle:thin:@192.168.4.196:1521:xe
+user=pms03
+pass=7777
+# tmpUpload
+#다운로드시 필요한 서버의 특정한 위치..
+upload=C:/z02_java/workspace/prj03/WebContent/z01_upload/
+#업로드의 서버의 임시위치
+tmpUpload=C:/z02_java/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/prj03/z01_upload/

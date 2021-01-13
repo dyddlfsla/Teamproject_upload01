@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >	
+<mapper namespace="Premium.A03_repository.A05_AndroidDao">
+
+
+<!-- public ArrayList<And_work> alist (And_work aw) -->
+<resultMap type="andwokr" id="workListResule"/>
+<select id="alist" resultMap="workListResule" parameterType="andwokr">
+SELECT  e.ename , b.PROTITLE, a.WORKTITLE, a.WORKTITLE text,  
+TO_CHAR(a.STARTDATE, 'YYYY-MM-DD') startdate ,TO_CHAR(a.ENDDATE,'YYYY-MM-DD' ) enddate
+FROM WORK a, PROJECT b, emp1 c, PROGRESS d, emp1 e
+WHERE a.prono = b.prono AND b.pm = e.EMPNO AND a.empno = c.empno AND a.PROGRESS = d.PROGRESS
+</select>
+
+
+<resultMap type="ceowork" id="worklistceolist"/>
+<select id="aclist" resultMap="worklistceolist" parameterType="ceowork">
+SELECT e.ename , b.PROTITLE, b.FIELD,
+TO_CHAR(a.STARTDATE, 'YYYY-MM-DD') startdate ,TO_CHAR(a.ENDDATE,'YYYY-MM-DD' ) enddate
+FROM WORK a, PROJECT b, emp1 c, PROGRESS d, emp1 e
+WHERE a.prono = b.prono AND b.pm = e.EMPNO AND a.empno = c.empno AND a.PROGRESS = d.PROGRESS
+</select>
+
+</mapper>
